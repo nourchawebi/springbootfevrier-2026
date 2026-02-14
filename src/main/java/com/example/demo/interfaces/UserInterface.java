@@ -1,5 +1,6 @@
 package com.example.demo.interfaces;
 
+import com.example.demo.entities.RoleName;
 import com.example.demo.entities.UserEntity;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface UserInterface {
     UserEntity getUserByName(String name);
     List<UserEntity> getUserSWT(String un);
     List<UserEntity> getUsersByEmailDomaine(String emailDomaine);
-
+     UserEntity adduserwithrole(UserEntity users, RoleName roleName);
 }

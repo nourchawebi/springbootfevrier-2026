@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.DTO.UserWithRoleRequest;
 import com.example.demo.entities.UserEntity;
 import com.example.demo.interfaces.UserInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,5 +91,9 @@ public class UserController {
      @GetMapping("getuserbyemaildomaine")
     public List<UserEntity> getusersbyemaildomain(@RequestParam String email){
         return userinterface.getUsersByEmailDomaine(email);
+     }
+     @PostMapping("add-with-role")
+    public UserEntity addUserWithRole(@RequestBody UserWithRoleRequest request){
+        return userinterface.adduserwithrole( request.getUser(),request.getRole().getRolename());
      }
 }
