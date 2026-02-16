@@ -110,7 +110,7 @@ public class UserImplement implements UserInterface {
                     return roleRepo.save(r);
                 }
         );
-        user.setRole(role);
-        return userRepo.save(user);
+        users.setRole(role);
+        return userRepo.save(users);
     }
 }
