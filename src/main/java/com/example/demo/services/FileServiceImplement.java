@@ -4,6 +4,7 @@ import com.example.demo.DAO.FileRepository;
 import com.example.demo.interfaces.FileServiceInterface;
 import com.example.demo.model.File;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
 @Service
@@ -60,14 +65,48 @@ public class FileServiceImplement  implements FileServiceInterface {
             return new ResponseEntity<>( HttpStatus.NOT_FOUND);
         }
     }
+    Path imagePath1= Paths.get("uploads/pdf");
+    Path imagePath2= Paths.get("uploads/images");
 
     @Override
     public String saveFile(MultipartFile file) {
-        return "";
+        String originalFilename = file.getOriginalFilename();
+        String extension= originalFilename.substring(originalFilename.lastIndexOf("."));
+        String randomNamed= RandomStringUtils.randomAlphanumeric(10)+ extension;
+        File newfile = new File();
+        newfile.setFileName(randomNamed);
+        try{
+            if(extension.contains("pdf")){
+                Files.copy(file.getInputStream(), imagePath1.resolve(randomNamed));
+                fileRepository.save(newfile);
+            }else{
+                Files.copy(file.getInputStream(), imagePath2.resolve(randomNamed));
+                fileRepository.save(newfile);
+
+            }
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+        return randomNamed;
     }
 
     @Override
     public byte[] afficherfile(String filename) {
-        return new byte[0];
+        String extension = filename.substring(filename.lastIndexOf("."));
+        try{
+            Path filePath;
+            if(extension.contains("pdf")){
+                filePath = imagePath1.resolve(filename);
+            }else {
+                filePath = imagePath2.resolve(filename);
+            }
+
+         return Files.readAllBytes(filePath);
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+
+        }
     }
 }
